@@ -1,4 +1,5 @@
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -11,6 +12,15 @@ import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.control.RadioMenuItem;
+import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.CheckMenuItem;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.SeparatorMenuItem;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.stage.Stage;
@@ -29,20 +39,43 @@ public class Calc2 extends Application {
     Button sin, cos, tan;
 	Button decimal, equals, dummy, reset, clearScreen;
     Button adjustFont;
-    ChoiceBox<Integer> choiceBox = new ChoiceBox<>();
-
-    int fontSize = 20;
+    RadioMenuItem setFontTo20, setFontTo30, setFontTo40;
 
 	public void start(Stage primaryStage) { //initializes the GUI
 		
-		display = new TextField();
-		String str = new String("SansSerif");		
+		display = new TextField();	
 		display.setAlignment(Pos.CENTER_RIGHT);
 		display.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
 
-        choiceBox.getItems().addAll(10, 20, 30, 40, 50, 60, 70);
-        choiceBox.setValue(20);        
-        choiceBox.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);        
+        
+        BorderPane border = new BorderPane();
+
+        MenuBar menuBar = new MenuBar();
+        menuBar.prefWidthProperty().bind(primaryStage.widthProperty());
+        border.setTop(menuBar);
+
+        Menu fileMenu = new Menu("File");
+        MenuItem about = new MenuItem("About");
+        MenuItem exit = new MenuItem("Exit");
+        fileMenu.getItems().addAll(about, new SeparatorMenuItem(), exit);
+
+        Menu optionsMenu = new Menu("Options");
+        Menu fontSize = new Menu("Font Size");
+        ToggleGroup toggle = new ToggleGroup();
+        setFontTo20 = new RadioMenuItem("20");
+        setFontTo20.setToggleGroup(toggle);
+        setFontTo20.setSelected(true);
+        setFontTo30 = new RadioMenuItem("30");
+        setFontTo30.setToggleGroup(toggle);
+        setFontTo40 = new RadioMenuItem("40");
+        setFontTo40.setToggleGroup(toggle);
+        fontSize.getItems().addAll(setFontTo20, setFontTo30, setFontTo40);
+        optionsMenu.getItems().add(fontSize);
+        fontCode(20);
+
+        menuBar.getMenus().addAll(fileMenu, optionsMenu);
+
+        exit.setOnAction(actionEvent -> Platform.exit());     
 
 		zero = new Button("0");
 		zero.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
@@ -106,49 +139,60 @@ public class Calc2 extends Application {
 
 		GridPane grid = new GridPane();
 
-		grid.setHgap(10);
-		grid.setVgap(10);
-		grid.setPadding(new Insets(10, 10, 10, 10));
+		grid.add(menuBar, 0, 0, 5, 1);
 
-		grid.add(display, 0, 0, 5, 1);        
-		grid.add(seven, 0, 1);
-		grid.add(eight, 1, 1);
-		grid.add(nine, 2, 1);
-		grid.add(divide, 3, 1);       
-		grid.add(four, 0, 2);
-		grid.add(five, 1, 2);
-		grid.add(six, 2, 2);
-		grid.add(multiply, 3, 2);
-		grid.add(one, 0, 3);
-		grid.add(two, 1, 3);
-		grid.add(three, 2, 3);
-		grid.add(subtract, 3, 3);
-		grid.add(zero, 0, 4);
-		grid.add(decimal, 1, 4);
-		grid.add(dummy, 2, 4);
-		grid.add(add, 3, 4);
-		grid.add(equals, 4, 3, 1, 2);
-		grid.add(reset, 4, 1);
-		grid.add(clearScreen, 4, 2);
-        grid.add(choiceBox, 5, 1, 1, 1);
-        grid.add(adjustFont, 5, 2);
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(0, 10, 10, 10));
+
+        grid.add(display, 0, 1, 5, 1);        
+		grid.add(seven, 0, 2);
+		grid.add(eight, 1, 2);
+		grid.add(nine, 2, 2);
+		grid.add(divide, 3, 2);       
+		grid.add(four, 0, 3);
+		grid.add(five, 1, 3);
+		grid.add(six, 2, 3);
+		grid.add(multiply, 3, 3);
+		grid.add(one, 0, 4);
+		grid.add(two, 1, 4);
+		grid.add(three, 2, 4);
+		grid.add(subtract, 3, 4);
+		grid.add(zero, 0, 5);
+		grid.add(decimal, 1, 5);
+		grid.add(dummy, 2, 5);
+		grid.add(add, 3, 5);
+		grid.add(equals, 4, 4, 1, 2);
+		grid.add(reset, 4, 2);
+		grid.add(clearScreen, 4, 3);
 
 		attachCode();
 
-		for (int colIndex = 0; colIndex < 6; colIndex++){
+		for (int colIndex = 0; colIndex < 5; colIndex++){
 			ColumnConstraints column = new ColumnConstraints();
     		column.setHgrow(Priority.ALWAYS);
     		column.setFillWidth(true);
     		grid.getColumnConstraints().add(column);
     	}
 
-    	for (int rowIndex = 0; rowIndex < 5; rowIndex++){
-			RowConstraints row = new RowConstraints();
-    		row.setVgrow(Priority.ALWAYS);
-    		row.setFillHeight(true);
-    		grid.getRowConstraints().add(row);
-    	}
-
+    	RowConstraints row0 = new RowConstraints();
+        row0.setPercentHeight(10);
+        RowConstraints row1 = new RowConstraints();
+    	row1.setVgrow(Priority.ALWAYS);
+    	row1.setFillHeight(true);
+        RowConstraints row2 = new RowConstraints();
+        row2.setVgrow(Priority.ALWAYS);
+        row2.setFillHeight(true);
+        RowConstraints row3 = new RowConstraints();
+        row3.setVgrow(Priority.ALWAYS);
+        row3.setFillHeight(true);
+        RowConstraints row4 = new RowConstraints();
+        row4.setVgrow(Priority.ALWAYS);
+        row4.setFillHeight(true);
+        RowConstraints row5 = new RowConstraints();
+        row5.setVgrow(Priority.ALWAYS);
+        row5.setFillHeight(true);
+    	grid.getRowConstraints().addAll(row0, row1, row2, row3, row4, row5);
 
     	grid.setPrefSize(WINDOW_WIDTH-10, WINDOW_HEIGHT-10);
     	grid.setMaxSize(Region.USE_COMPUTED_SIZE-10, Region.USE_COMPUTED_SIZE-10);
@@ -180,7 +224,10 @@ public class Calc2 extends Application {
         dummy.setOnAction(e -> btncode(e));
         clearScreen.setOnAction(e -> btncode(e));
         reset.setOnAction(e -> btncode(e));
-        adjustFont.setOnAction(e -> btncode(e));          
+        adjustFont.setOnAction(e -> btncode(e));
+        setFontTo20.setOnAction(actionEvent -> fontCode(20));
+        setFontTo30.setOnAction(actionEvent -> fontCode(30));
+        setFontTo40.setOnAction(actionEvent -> fontCode(40));
     }
 
     public void btncode(ActionEvent e) {
@@ -234,10 +281,15 @@ public class Calc2 extends Application {
 
     }
 
+    public void fontCode(int num) {
+        Font font1 = new Font(num);
+        display.setFont(font1);            
+    }
+
     public void getChoice(){
-        fontSize = choiceBox.getValue();
+        /*fontSize = choiceBox.getValue();
         Font font1 = new Font(fontSize);
-        display.setFont(font1);
+        display.setFont(font1);*/
     }
 
     public void operateNums (String operation) {
