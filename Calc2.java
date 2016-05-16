@@ -167,7 +167,7 @@ public class Calc2 extends Application {
 		grid.add(subtract, 3, 5);
 		grid.add(zero, 0, 6);
 		grid.add(decimal, 1, 6);
-		//grid.add(dummy, 2, 6);
+		grid.add(dummy, 2, 6);
 		grid.add(add, 3, 6);
 		grid.add(equals, 4, 5, 1, 2);
 		grid.add(reset, 4, 3);
