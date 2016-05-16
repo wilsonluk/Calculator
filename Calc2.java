@@ -31,15 +31,17 @@ public class Calc2 extends Application {
     private static final double WINDOW_HEIGHT = 300 ; //sets the default window height
     public static String displayContents = ("0");
     public static double num = 0.0;
+    public static double op1 = 0;
+    public static double op2 = 0;
     public static calculation calc = new calculation();
 
-	TextField display;
-	Button zero, one, two, three, four, five, six, seven, eight, nine;
-	Button multiply, divide, add, subtract;
-    Button sin, cos, tan;
-	Button decimal, equals, dummy, reset, clearScreen;
-    Button adjustFont;
-    RadioMenuItem setFontTo20, setFontTo30, setFontTo40;
+	public static TextField display;
+	public static Button zero, one, two, three, four, five, six, seven, eight, nine;
+	public static Button multiply, divide, add, subtract;
+    public static Button leftParen, rightParen;
+    public static Button sin, cos, tan;
+	public static Button decimal, equals, dummy, reset, clearScreen;
+    public static RadioMenuItem setFontTo20, setFontTo30, setFontTo40;
 
 	public void start(Stage primaryStage) { //initializes the GUI
 		
@@ -107,6 +109,12 @@ public class Calc2 extends Application {
 		nine = new Button("9");
 		nine.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
 
+        leftParen = new Button("(");
+        leftParen.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+
+        rightParen = new Button(")");
+        rightParen.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+
 		multiply = new Button(" *");
 		multiply.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
 
@@ -134,9 +142,6 @@ public class Calc2 extends Application {
 		clearScreen = new Button("CE");
 		clearScreen.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
 
-        adjustFont = new Button("Font Size");
-        adjustFont.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-
 		GridPane grid = new GridPane();
 
 		grid.add(menuBar, 0, 0, 5, 1);
@@ -146,29 +151,31 @@ public class Calc2 extends Application {
         grid.setPadding(new Insets(0, 10, 10, 10));
 
         grid.add(display, 0, 1, 5, 1);        
-		grid.add(seven, 0, 2);
-		grid.add(eight, 1, 2);
-		grid.add(nine, 2, 2);
-		grid.add(divide, 3, 2);       
-		grid.add(four, 0, 3);
-		grid.add(five, 1, 3);
-		grid.add(six, 2, 3);
-		grid.add(multiply, 3, 3);
-		grid.add(one, 0, 4);
-		grid.add(two, 1, 4);
-		grid.add(three, 2, 4);
-		grid.add(subtract, 3, 4);
-		grid.add(zero, 0, 5);
-		grid.add(decimal, 1, 5);
-		grid.add(dummy, 2, 5);
-		grid.add(add, 3, 5);
-		grid.add(equals, 4, 4, 1, 2);
-		grid.add(reset, 4, 2);
-		grid.add(clearScreen, 4, 3);
+		grid.add(leftParen, 0, 2);
+        grid.add(rightParen, 1, 2);
+        grid.add(seven, 0, 3);
+		grid.add(eight, 1, 3);
+		grid.add(nine, 2, 3);
+		grid.add(divide, 3, 3);       
+		grid.add(four, 0, 4);
+		grid.add(five, 1, 4);
+		grid.add(six, 2, 4);
+		grid.add(multiply, 3, 4);
+		grid.add(one, 0, 5);
+		grid.add(two, 1, 5);
+		grid.add(three, 2, 5);
+		grid.add(subtract, 3, 5);
+		grid.add(zero, 0, 6);
+		grid.add(decimal, 1, 6);
+		grid.add(dummy, 2, 6);
+		grid.add(add, 3, 6);
+		grid.add(equals, 4, 5, 1, 2);
+		grid.add(reset, 4, 3);
+		grid.add(clearScreen, 4, 4);
 
 		attachCode();
 
-		for (int colIndex = 0; colIndex < 5; colIndex++){
+		for (int colIndex = 0; colIndex < 6; colIndex++){
 			ColumnConstraints column = new ColumnConstraints();
     		column.setHgrow(Priority.ALWAYS);
     		column.setFillWidth(true);
@@ -215,6 +222,8 @@ public class Calc2 extends Application {
         seven.setOnAction(e -> btncode(e));
         eight.setOnAction(e -> btncode(e));
         nine.setOnAction(e -> btncode(e));
+        leftParen.setOnAction(e -> btncode(e));
+        rightParen.setOnAction(e -> btncode(e));
         add.setOnAction(e -> btncode(e));
         subtract.setOnAction(e -> btncode(e));
         multiply.setOnAction(e -> btncode(e));
@@ -224,7 +233,6 @@ public class Calc2 extends Application {
         dummy.setOnAction(e -> btncode(e));
         clearScreen.setOnAction(e -> btncode(e));
         reset.setOnAction(e -> btncode(e));
-        adjustFont.setOnAction(e -> btncode(e));
         setFontTo20.setOnAction(actionEvent -> fontCode(20));
         setFontTo30.setOnAction(actionEvent -> fontCode(30));
         setFontTo40.setOnAction(actionEvent -> fontCode(40));
@@ -255,7 +263,11 @@ public class Calc2 extends Application {
     		addToDisplay("8");
     	} else if (e.getSource() == nine) {
     		addToDisplay("9");
-    	} else if (e.getSource() == decimal) {
+    	} else if (e.getSource() == leftParen) {
+            addToDisplay("(");
+        } else if (e.getSource() == rightParen) {
+            addToDisplay(")");
+        } else if (e.getSource() == decimal) {
             if (displayContents.indexOf(".") == -1) {
     		    displayContents += ".";
                 display.setText(displayContents);
@@ -266,19 +278,16 @@ public class Calc2 extends Application {
             clearDisplay();
             calc.erase("all");
         } else if (e.getSource() == add) {
-    		operateNums("sum");
+    		addToDisplay("+");
     	} else if (e.getSource() == subtract) {
-    		operateNums("sub");
+    		addToDisplay("-");
     	} else if (e.getSource() == multiply) {
-    		operateNums("multi");
+    		addToDisplay("*");
     	} else if (e.getSource() == divide) {
-    		operateNums("div");
+    		addToDisplay("/");
     	} else if (e.getSource() == equals) {
     		calculate();
-    	} else if(e.getSource() == adjustFont) {
-            getChoice();
-        }
-
+    	}
     }
 
     public void fontCode(int num) {
@@ -286,52 +295,139 @@ public class Calc2 extends Application {
         display.setFont(font1);            
     }
 
-    public void getChoice(){
-        /*fontSize = choiceBox.getValue();
-        Font font1 = new Font(fontSize);
-        display.setFont(font1);*/
+    public static String interpret (String expression) {
+        if (expression.indexOf("(") != -1) {
+            int start = 0;
+            int end = expression.indexOf(")");
+            boolean trip = true;
+            for (int i = end; i > 0 && trip; i--) {
+                if (expression.charAt(i) == '(') {
+                    trip = false;
+                    start = i;
+                }
+            }
+            expression = expression.replace(expression.substring(start, end + 1), interpret(expression.substring(start + 1, end)));
+        } else {
+            while(!isDouble(expression)) {
+                boolean oooTrip = false;
+                String operation = "";
+                int test = 0;
+                if (expression.indexOf("*") != -1) {
+                    test = expression.indexOf("*");
+                    operation = "*";
+                    oooTrip = true;
+                }
+                if (expression.indexOf("/") != -1) {
+                    if (expression.indexOf("/") < test || test == 0) {
+                        test = expression.indexOf("/");
+                        operation = "/";
+                    }
+                    oooTrip = true;
+                }
+                if (expression.indexOf("-") != -1 && !oooTrip) {
+                    test = expression.indexOf("-");
+                    operation = "-";
+                } else if (expression.indexOf("+") != -1 && !oooTrip) {
+                    test = expression.indexOf("+");
+                    operation = "+";
+                }
+                int i = 2;
+                while (test + i <= expression.length() && isDouble(expression.substring(test + 1, test + i))) {
+                    op2 = Double.parseDouble(expression.substring(test + 1, test + i));
+                    i++;
+                }
+                int j = 1;
+                while (test - j >= 0 && isDouble(expression.substring(test - j, test))) {
+                    op1 = Double.parseDouble(expression.substring(test - j, test));
+                    j++;
+                }
+                String result = calculate(op1, op2, operation);
+                if(result.equals("STOP")) {
+                    break;
+                }
+                expression = expression.replace(expression.substring(test - j + 1, test) + operation + expression.substring(test + 1, test + i - 1), result);
+            }
+        }
+        while (!isDouble(expression)) {
+            expression = interpret(expression);
+        }
+        return expression;
     }
 
-    public void operateNums (String operation) {
-        num = Double.parseDouble(displayContents);
-        clearDisplay();
-        calc.setFirstNum(num);
-        calc.setOperator(operation);
+    public static boolean isDouble( String str ) {
+        if (str.indexOf("+") != -1) {
+            return false;
+        }
+        try{
+            Double.parseDouble( str );
+            return true;
+        }
+        catch( Exception e ){
+            return false;
+        }
     }
 
-    public void addToDisplay (String num) {
-    	if ((displayContents.equals("0"))){
-    			displayContents = num;
-    	} else {
-    			displayContents += num;
-    	}
-    	display.setText(displayContents);
+    public static String calculate (double op1, double op2, String temp) {
+        if (temp.equals("*")) {
+            return Double.toString(op1*op2);
+        } else if (temp.equals("+")) {
+            return Double.toString(op1+op2);
+        } else if (temp.equals("-")) {
+            return Double.toString(op1-op2);
+        } else if (temp.equals("/")) {
+            if (op2 == 0) {
+                displayContents = "ERR: Divide By 0";
+                display.setText("ERR: Divide By 0");
+                return "STOP";
+            }else {
+                return Double.toString(op1/op2);
+            }
+        }
+        return "";
     }
 
-    public void clearDisplay () {
+    public static void addToDisplay (String input) {
+        if(displayContents.indexOf("ERR") == -1) {
+        	if ((displayContents.equals("0"))){
+        			displayContents = input;
+        	} else {
+        			displayContents += input;
+        	}
+        	display.setText(displayContents);
+        }
+    }
+
+    public static void clearDisplay () {
     	displayContents = "0";
     	display.setText(displayContents);
     }
 
-    public void addNums() {
-    	num = Double.parseDouble(displayContents);
-    	clearDisplay();
-    	calc.setFirstNum(num);
-    	calc.setOperator("sum");
-    }
-
-    public void calculate () {
-        if (calc.checkifNull()) {
-            calc.setFirstNum(Double.parseDouble(displayContents));
-        } else {
-    	   num = Double.parseDouble(displayContents);
-    	   calc.setSecondNum(num);
+    public static void calculate () {
+        if(matched(displayContents) && displayContents.indexOf("ERR") == -1) {
+            printResult(interpret(displayContents));
         }
-    	printResult(calc.calculate());
-    	calc.erase("");
+        
     }
 
-    public void printResult (String result) {
+    public static boolean matched (String toTheTest) {
+        int level = 0;
+        for (int i = 0; i < toTheTest.length(); i++) {
+            if (toTheTest.charAt(i) == '(') {
+                level++;
+            } else if (toTheTest.charAt(i) == ')') {
+                level--;
+            }
+            if (level < 0) {
+                return false;
+            }
+        }
+        if (level == 0) {
+            return true;
+        }
+        return false;
+    }
+
+    public static void printResult (String result) {
     	if (result.indexOf(".0") == (result.length()-2)) {
     		result = result.substring(0, result.length()-2);
     	}
