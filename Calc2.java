@@ -1,33 +1,14 @@
-import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.event.ActionEvent;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
+import javafx.application.*;
+import javafx.event.*;
+import javafx.geometry.*;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.RowConstraints;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.control.RadioMenuItem;
-import javafx.scene.control.ToggleGroup;
-import javafx.scene.control.CheckMenuItem;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.SeparatorMenuItem;
-import javafx.scene.control.ToggleGroup;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontPosture;
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
+import javafx.scene.control.*;
+import javafx.scene.text.*;
+import javafx.scene.input.*;
 import javafx.stage.Stage;
-import javafx.event.EventHandler;
-import javafx.scene.input.KeyEvent;
-import javafx.collections.FXCollections;
-import javafx.scene.control.ListView;
+import javafx.collections.*;
 
 public class Calc2 extends Application {
 
