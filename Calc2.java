@@ -24,6 +24,10 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.stage.Stage;
+import javafx.event.EventHandler;
+import javafx.scene.input.KeyEvent;
+import javafx.collections.FXCollections;
+import javafx.scene.control.ListView;
 
 public class Calc2 extends Application {
 
@@ -205,6 +209,17 @@ public class Calc2 extends Application {
     	grid.setMaxSize(Region.USE_COMPUTED_SIZE-10, Region.USE_COMPUTED_SIZE-10);
 
 		Scene calcScene = new Scene (grid, WINDOW_WIDTH, WINDOW_HEIGHT);
+        final ListView<String> console = new ListView<String>(FXCollections.<String>observableArrayList());
+        display.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            public void handle(KeyEvent ke) {
+                String s = ke.getCode() + "";
+                if(s.equals("ENTER")){
+                    displayContents = display.getText();
+                    displayContents = displayContents.replaceAll("\\s+","");
+                    calculate();
+                }                
+            }
+        });
 		primaryStage.setTitle("Calc V0.1");
 		primaryStage.setScene(calcScene);
 		primaryStage.show();
@@ -286,6 +301,8 @@ public class Calc2 extends Application {
     	} else if (e.getSource() == divide) {
     		addToDisplay("/");
     	} else if (e.getSource() == equals) {
+            displayContents = display.getText();
+            displayContents = displayContents.replaceAll("\\s+","");
     		calculate();
     	}
     }
@@ -434,7 +451,7 @@ public class Calc2 extends Application {
     	displayContents = result;
     	display.setText(displayContents);
     }
-   
+    
     public static void main(String[] args) {
         launch(args);
     }
