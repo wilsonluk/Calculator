@@ -37,7 +37,6 @@ public class Calc2 extends Application {
     public static double num = 0.0;
     public static double op1 = 0;
     public static double op2 = 0;
-    public static calculation calc = new calculation();
 
 	public static TextField display;
 	public static Button zero, one, two, three, four, five, six, seven, eight, nine;
@@ -45,7 +44,8 @@ public class Calc2 extends Application {
     public static Button leftParen, rightParen;
     public static Button sin, cos, tan;
 	public static Button decimal, equals, dummy, reset, clearScreen;
-    public static RadioMenuItem setFontTo20, setFontTo30, setFontTo40;
+    public static RadioMenuItem setDisplayFontTo20, setDisplayFontTo30, setDisplayFontTo40;
+    public static RadioMenuItem setButtonFontTo10, setButtonFontTo15, setButtonFontTo20;
 
 	public void start(Stage primaryStage) { //initializes the GUI
 		
@@ -66,18 +66,30 @@ public class Calc2 extends Application {
         fileMenu.getItems().addAll(about, new SeparatorMenuItem(), exit);
 
         Menu optionsMenu = new Menu("Options");
-        Menu fontSize = new Menu("Font Size");
-        ToggleGroup toggle = new ToggleGroup();
-        setFontTo20 = new RadioMenuItem("20");
-        setFontTo20.setToggleGroup(toggle);
-        setFontTo20.setSelected(true);
-        setFontTo30 = new RadioMenuItem("30");
-        setFontTo30.setToggleGroup(toggle);
-        setFontTo40 = new RadioMenuItem("40");
-        setFontTo40.setToggleGroup(toggle);
-        fontSize.getItems().addAll(setFontTo20, setFontTo30, setFontTo40);
-        optionsMenu.getItems().add(fontSize);
-        fontCode(20);
+
+        Menu displayFontSize = new Menu("Display Font Size");
+        ToggleGroup displayToggle = new ToggleGroup();
+        setDisplayFontTo20 = new RadioMenuItem("20");
+        setDisplayFontTo20.setToggleGroup(displayToggle);
+        setDisplayFontTo20.setSelected(true);
+        setDisplayFontTo30 = new RadioMenuItem("30");
+        setDisplayFontTo30.setToggleGroup(displayToggle);
+        setDisplayFontTo40 = new RadioMenuItem("40");
+        setDisplayFontTo40.setToggleGroup(displayToggle);
+        displayFontSize.getItems().addAll(setDisplayFontTo20, setDisplayFontTo30, setDisplayFontTo40);
+        optionsMenu.getItems().add(displayFontSize);
+
+        Menu buttonFontSize = new Menu("Button Font Size");
+        ToggleGroup buttonToggle = new ToggleGroup();
+        setButtonFontTo10 = new RadioMenuItem("10");
+        setButtonFontTo10.setToggleGroup(buttonToggle);
+        setButtonFontTo10.setSelected(true);
+        setButtonFontTo15 = new RadioMenuItem("15");
+        setButtonFontTo15.setToggleGroup(buttonToggle);
+        setButtonFontTo20 = new RadioMenuItem("20");
+        setButtonFontTo20.setToggleGroup(buttonToggle);
+        buttonFontSize.getItems().addAll(setButtonFontTo10, setButtonFontTo15, setButtonFontTo20);
+        optionsMenu.getItems().add(buttonFontSize);
 
         menuBar.getMenus().addAll(fileMenu, optionsMenu);
 
@@ -85,6 +97,8 @@ public class Calc2 extends Application {
 
 		zero = new Button("0");
 		zero.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+        Font font1 = new Font(30);
+        zero.setFont(font1);
 
 		one = new Button("1");
 		one.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
@@ -146,7 +160,10 @@ public class Calc2 extends Application {
 		clearScreen = new Button("CE");
 		clearScreen.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
 
-		GridPane grid = new GridPane();
+        displayFontCode(20);
+        buttonFontCode(12);
+
+        GridPane grid = new GridPane();
 
 		grid.add(menuBar, 0, 0, 5, 1);
 
@@ -203,7 +220,10 @@ public class Calc2 extends Application {
         RowConstraints row5 = new RowConstraints();
         row5.setVgrow(Priority.ALWAYS);
         row5.setFillHeight(true);
-    	grid.getRowConstraints().addAll(row0, row1, row2, row3, row4, row5);
+        RowConstraints row6 = new RowConstraints();
+        row6.setVgrow(Priority.ALWAYS);
+        row6.setFillHeight(true);
+    	grid.getRowConstraints().addAll(row0, row1, row2, row3, row4, row5, row6);
 
     	grid.setPrefSize(WINDOW_WIDTH-10, WINDOW_HEIGHT-10);
     	grid.setMaxSize(Region.USE_COMPUTED_SIZE-10, Region.USE_COMPUTED_SIZE-10);
@@ -248,9 +268,12 @@ public class Calc2 extends Application {
         dummy.setOnAction(e -> btncode(e));
         clearScreen.setOnAction(e -> btncode(e));
         reset.setOnAction(e -> btncode(e));
-        setFontTo20.setOnAction(actionEvent -> fontCode(20));
-        setFontTo30.setOnAction(actionEvent -> fontCode(30));
-        setFontTo40.setOnAction(actionEvent -> fontCode(40));
+        setDisplayFontTo20.setOnAction(actionEvent -> displayFontCode(20));
+        setDisplayFontTo30.setOnAction(actionEvent -> displayFontCode(30));
+        setDisplayFontTo40.setOnAction(actionEvent -> displayFontCode(40));
+        setButtonFontTo10.setOnAction(actionEvent -> buttonFontCode(10));
+        setButtonFontTo15.setOnAction(actionEvent -> buttonFontCode(15));
+        setButtonFontTo20.setOnAction(actionEvent -> buttonFontCode(20));
     }
 
     public void btncode(ActionEvent e) {
@@ -291,7 +314,6 @@ public class Calc2 extends Application {
     		clearDisplay();
     	} else if (e.getSource() == reset) {
             clearDisplay();
-            calc.erase("all");
         } else if (e.getSource() == add) {
     		addToDisplay("+");
     	} else if (e.getSource() == subtract) {
@@ -307,9 +329,31 @@ public class Calc2 extends Application {
     	}
     }
 
-    public void fontCode(int num) {
+    public void displayFontCode(int num) {
         Font font1 = new Font(num);
         display.setFont(font1);            
+    }
+
+    public void buttonFontCode (int num) {
+        Font font2 = new Font(num);
+        zero.setFont(font2);
+        one.setFont(font2);
+        two.setFont(font2);
+        three.setFont(font2);
+        four.setFont(font2);
+        five.setFont(font2);
+        six.setFont(font2);
+        seven.setFont(font2);
+        eight.setFont(font2);
+        nine.setFont(font2);
+        multiply.setFont(font2);
+        divide.setFont(font2);
+        add.setFont(font2);
+        subtract.setFont(font2);
+        decimal.setFont(font2);
+        equals.setFont(font2);
+        clearScreen.setFont(font2);
+        reset.setFont(font2);
     }
 
     public static String interpret (String expression) {
