@@ -52,7 +52,6 @@ public class Calc2 extends Application {
 		display = new TextField();	
 		display.setAlignment(Pos.CENTER_RIGHT);
 		display.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-
         
         BorderPane border = new BorderPane();
 
@@ -399,9 +398,8 @@ public class Calc2 extends Application {
     public static void calculate () {
         if(matched(displayContents) && displayContents.indexOf("ERR") == -1) {
             CalcObj newCalc = new CalcObj();
-            printResult(newCalc.interpret(displayContents));
-        }
-        
+            printResult(newCalc.interpret(displayContents, true));
+        }  
     }
 
     public static boolean matched (String toTheTest) {

@@ -4,7 +4,7 @@ public class CalcObj {
         
     }
 
-    public String interpret (String expression) {
+    public String interpret (String expression, boolean tripConvert) {
         boolean errorTrip = false;
         double op1 = 0;
         double op2 = 0;
@@ -16,31 +16,32 @@ public class CalcObj {
             int end = findNeutralLevel(index, expression.length(), expression);
             String originalExpression = expression.substring(index + 3, end+1);
             int end2 = findNeutralLevel(0, originalExpression.length(), originalExpression);
-            String number = interpret(originalExpression.substring(1, end2));
+            String number = interpret(originalExpression.substring(1, end2), false);
+            System.out.println(number);
             String solved = calculate(Double.parseDouble(number), 0, "sin");
             expression = expression.replace("sin" + originalExpression, solved);
-            interpret(expression);
+            interpret(expression, true);
         } else if (expression.indexOf("cos(") != -1) {
             int index = expression.indexOf("cos(");
             int end = findNeutralLevel(index, expression.length(), expression);
             String originalExpression = expression.substring(index + 3, end+1);
             int end2 = findNeutralLevel(0, originalExpression.length(), originalExpression);
-            String number = interpret(originalExpression.substring(1, end2));
+            String number = interpret(originalExpression.substring(1, end2), false);
             String solved = calculate(Double.parseDouble(number), 0, "cos");
             expression = expression.replace("cos" + originalExpression, solved);
-            interpret(expression);
+            interpret(expression, true);
         } else if (expression.indexOf("tan(") != -1) {
             int index = expression.indexOf("tan(");
             int end = findNeutralLevel(index, expression.length(), expression);
             String originalExpression = expression.substring(index + 3, end+1);
             int end2 = findNeutralLevel(0, originalExpression.length(), originalExpression);
-            String number = interpret(originalExpression.substring(1, end2));            
+            String number = interpret(originalExpression.substring(1, end2), false);            
             if(Double.parseDouble(number) != Math.PI/2) {
                 System.out.println(number);
                 System.out.println("Hi");
                 String solved = calculate(Double.parseDouble(number), 0, "tan");
                 expression = expression.replace("tan" + originalExpression, solved);
-                interpret(expression);
+                interpret(expression, true);
             } else {
                 expression = "ERR: TAN";
                 errorTrip = true;
@@ -58,7 +59,7 @@ public class CalcObj {
             expression = expression.replace("~", "temp");
             expression = expression.replace("-", "~");
             expression = expression.replace("temp", "-");
-            expression = expression = expression.replace(expression.substring(start, end + 1), interpret(expression.substring(start + 1, end)));
+            expression = expression = expression.replace(expression.substring(start, end + 1), interpret(expression.substring(start + 1, end), true));
         } else {
             while(!isDouble(expression)) {
                 boolean oooTrip = false;
@@ -127,10 +128,12 @@ public class CalcObj {
             }
         }if (!errorTrip) {
             while (!isDouble(expression)) {
-                expression = interpret(expression);
+                expression = interpret(expression, true);
             }
         }
-        expression = expression.replace("-", "~");
+        if (tripConvert) {
+            expression = expression.replace("-", "~");
+        }
         return expression;
     }
 
