@@ -1,33 +1,33 @@
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.RowConstraints;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.control.RadioMenuItem;
-import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.CheckMenuItem;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ListView;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.RadioMenuItem;
 import javafx.scene.control.SeparatorMenuItem;
+import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.ToggleGroup;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.RowConstraints;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.stage.Stage;
-import javafx.event.EventHandler;
-import javafx.scene.input.KeyEvent;
-import javafx.collections.FXCollections;
-import javafx.scene.control.ListView;
 
 public class Calc2 extends Application {
 
@@ -433,8 +433,14 @@ public class Calc2 extends Application {
                     }
                     j++;
                 }
-                String result = calculate(op1, op2, operation);
-                expression = expression = expression.replace(expression.substring(test - j + 1, test) + operation + expression.substring(test + 1, test + i - 1), result);
+                if(op2 == 0 && operation.equals("/")) {
+                    displayContents = "ERR: Divide By 0";
+                    display.setText("ERR: Divide By 0");
+                    break;
+                } else {
+                    String result = calculate(op1, op2, operation);
+                    expression = expression = expression.replace(expression.substring(test - j + 1, test) + operation + expression.substring(test + 1, test + i - 1), result);
+                }
             }
         }
         while (!isDouble(expression)) {
@@ -468,13 +474,7 @@ public class Calc2 extends Application {
         } else if (temp.equals("~")) {
             return Double.toString(op1-op2);
         } else if (temp.equals("/")) {
-            if (op2 == 0) {
-                displayContents = "ERR: Divide By 0";
-                display.setText("ERR: Divide By 0");
-                return "STOP";
-            }else {
-                return Double.toString(op1/op2);
-            }
+            return Double.toString(op1/op2);
         }
         return "";
     }
