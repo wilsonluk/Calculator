@@ -505,6 +505,7 @@ public class Calc2 extends Application {
                 expression = interpret(expression);
             }
         }
+        expression = expression.replace("-", "~");
         return expression;
     }
 
