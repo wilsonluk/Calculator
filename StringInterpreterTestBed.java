@@ -2,9 +2,8 @@ import java.util.*;
 
 public class StringInterpreterTestBed {
 
-	public static double op1 = 0;
-	public static double op2 = 0;
-	public static boolean triper = true;
+
+	//public static boolean triper = true;
 
 	public static void main (String[] args) {
 		Scanner input = new Scanner (System.in);
@@ -13,10 +12,49 @@ public class StringInterpreterTestBed {
 	}
 
 	public static String interpret (String expression) {
+		double op1 = 0;
+		double op2 = 0;
+		System.out.println(expression);
 		expression = expression.replace("~", "temp");
 		expression = expression.replace("-", "~");
 		expression = expression.replace("temp", "-");
-		if (expression.indexOf("(") != -1) {
+		if (expression.indexOf("sin(") != -1) {
+			System.out.println(expression);
+			int index = expression.indexOf("sin(");
+			int end = findNeutralLevel(index, expression.length(), expression);
+			System.out.println(index);
+			System.out.println(end);
+			String originalExpression = expression.substring(index + 3, end+1);
+			int end2 = findNeutralLevel(0, originalExpression.length(), originalExpression);
+			String number = interpret(originalExpression.substring(1, end2));
+			String solved = calculate(Double.parseDouble(number), 0, "sin");
+			expression = expression.replace("sin" + originalExpression, solved);
+			interpret(expression);
+		} else if (expression.indexOf("cos(") != -1) {
+			System.out.println(expression);
+			int index = expression.indexOf("cos(");
+			int end = findNeutralLevel(index, expression.length(), expression);
+			System.out.println(index);
+			System.out.println(end);
+			String originalExpression = expression.substring(index + 3, end+1);
+			int end2 = findNeutralLevel(0, originalExpression.length(), originalExpression);
+			String number = interpret(originalExpression.substring(1, end2));
+			String solved = calculate(Double.parseDouble(number), 0, "cos");
+			expression = expression.replace("cos" + originalExpression, solved);
+			interpret(expression);
+		} else if (expression.indexOf("tan(") != -1) {
+			System.out.println(expression);
+			int index = expression.indexOf("tan(");
+			int end = findNeutralLevel(index, expression.length(), expression);
+			System.out.println(index);
+			System.out.println(end);
+			String originalExpression = expression.substring(index + 3, end+1);
+			int end2 = findNeutralLevel(0, originalExpression.length(), originalExpression);
+			String number = interpret(originalExpression.substring(1, end2));
+			String solved = calculate(Double.parseDouble(number), 0, "tan");
+			expression = expression.replace("tan" + originalExpression, solved);
+			interpret(expression);
+		} else if (expression.indexOf("(") != -1) {
 			int start = 0;
 			int end = expression.indexOf(")");
 			boolean trip = true;
@@ -32,7 +70,6 @@ public class StringInterpreterTestBed {
 			expression = expression = expression.replace(expression.substring(start, end + 1), interpret(expression.substring(start + 1, end)));
 		} else {
 			while(!isDouble(expression)) {
-				System.out.println(expression);
 				boolean oooTrip = false;
 				String operation = "";
 				int test = 0;
@@ -56,11 +93,9 @@ public class StringInterpreterTestBed {
 					operation = "+";
 				}
 				int i = 2;
-
 				while (test + i <= expression.length() && isDouble(expression.substring(test + 1, test + i))) {
 					boolean tripForNegative = false;
 					String testString = expression.substring(test + 1, test + i);
-					System.out.println(testString);
 					if(testString.charAt(0) == '-') {
 						testString = testString.replace("-", "");
 						tripForNegative = true;
@@ -101,6 +136,22 @@ public class StringInterpreterTestBed {
 		return expression;
 	}
 
+	public static int findNeutralLevel (int start, int end, String text) {
+		int level = 0;
+		int index = 0;
+		for (int i = start; i < end; i++) {
+			if (text.charAt(i) == '(') {
+				level++;
+			} else if (text.charAt(i) == ')') {
+				level--;
+			}
+			if (level == 0) {
+				index = i;
+			}
+		}
+		return index;
+	}
+
 	public static boolean isDouble( String str ) {
 		if (str.indexOf("+") != -1) {
 			return false;
@@ -126,6 +177,15 @@ public class StringInterpreterTestBed {
 			return Double.toString(op1-op2);
 		} else if (temp.equals("/")) {
 			return Double.toString(op1/op2);
+		} else if (temp.equals("sin")) {
+			Double tempDouble = Math.sin(op1);
+			return tempDouble.toString();
+		} else if (temp.equals("cos")) {
+			Double tempDouble = Math.cos(op1);
+			return tempDouble.toString();
+		} else if (temp.equals("tan")) {
+			Double tempDouble = Math.tan(op1);
+			return tempDouble.toString();
 		}
 		return "";
 	}
