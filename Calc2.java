@@ -375,6 +375,9 @@ public class Calc2 extends Application {
         equals.setFont(font2);
         clearScreen.setFont(font2);
         reset.setFont(font2);
+        sin.setFont(font2);
+        cos.setFont(font2);
+        tan.setFont(font2);
     }
 
     public static String interpret (String expression) {
@@ -407,8 +410,7 @@ public class Calc2 extends Application {
             int end = findNeutralLevel(index, expression.length(), expression);
             String originalExpression = expression.substring(index + 3, end+1);
             int end2 = findNeutralLevel(0, originalExpression.length(), originalExpression);
-            String number = interpret(originalExpression.substring(1, end2));
-            number = "" + Math.PI/2;
+            String number = interpret(originalExpression.substring(1, end2));            
             if(Double.parseDouble(number) != Math.PI/2) {
                 System.out.println(number);
                 System.out.println("Hi");
