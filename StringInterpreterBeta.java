@@ -13,6 +13,9 @@ public class StringInterpreterBeta {
 	}
 
 	public static String interpret (String expression) {
+		expression = expression.replace("~", "temp");
+		expression = expression.replace("-", "~");
+		expression = expression.replace("temp", "-");
 		if (expression.indexOf("(") != -1) {
 			int start = 0;
 			int end = expression.indexOf(")");
@@ -23,10 +26,12 @@ public class StringInterpreterBeta {
 					start = i;
 				}
 			}
-			expression = expression.replace(expression.substring(start, end + 1), interpret(expression.substring(start + 1, end)));
+			expression = expression.replace("~", "temp");
+			expression = expression.replace("-", "~");
+			expression = expression.replace("temp", "-");
+			expression = expression = expression.replace(expression.substring(start, end + 1), interpret(expression.substring(start + 1, end)));
 		} else {
 			while(!isDouble(expression)) {
-				System.out.println(expression);
 				boolean oooTrip = false;
 				String operation = "";
 				int test = 0;
@@ -42,9 +47,9 @@ public class StringInterpreterBeta {
 					}
 					oooTrip = true;
 				}
-				if (expression.indexOf("-") != -1 && !oooTrip) {
-					test = expression.indexOf("-");
-					operation = "-";
+				if (expression.indexOf("~") != -1 && !oooTrip) {
+					test = expression.indexOf("~");
+					operation = "~";
 				} else if (expression.indexOf("+") != -1 && !oooTrip) {
 					test = expression.indexOf("+");
 					operation = "+";
@@ -60,7 +65,7 @@ public class StringInterpreterBeta {
 					j++;
 				}
 				String result = calculate(op1, op2, operation);
-				expression = expression.replace(expression.substring(test - j + 1, test) + operation + expression.substring(test + 1, test + i - 1), result);
+				expression = expression = expression.replace(expression.substring(test - j + 1, test) + operation + expression.substring(test + 1, test + i - 1), result);
 			}
 		}
 		while (!isDouble(expression)) {
@@ -87,7 +92,7 @@ public class StringInterpreterBeta {
 			return Double.toString(op1*op2);
 		} else if (temp.equals("+")) {
 			return Double.toString(op1+op2);
-		} else if (temp.equals("-")) {
+		} else if (temp.equals("~")) {
 			return Double.toString(op1-op2);
 		} else if (temp.equals("/")) {
 			return Double.toString(op1/op2);

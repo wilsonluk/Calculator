@@ -97,8 +97,6 @@ public class Calc2 extends Application {
 
 		zero = new Button("0");
 		zero.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-        Font font1 = new Font(30);
-        zero.setFont(font1);
 
 		one = new Button("1");
 		one.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
