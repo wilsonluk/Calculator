@@ -43,7 +43,7 @@ public class Calc2 extends Application {
 	public static Button multiply, divide, add, subtract;
     public static Button leftParen, rightParen;
     public static Button sin, cos, tan;
-	public static Button decimal, equals, dummy, reset, clearScreen;
+	public static Button decimal, equals, negate, reset, clearScreen;
     public static RadioMenuItem setDisplayFontTo20, setDisplayFontTo30, setDisplayFontTo40;
     public static RadioMenuItem setButtonFontTo10, setButtonFontTo15, setButtonFontTo20;
 
@@ -149,8 +149,8 @@ public class Calc2 extends Application {
 		equals = new Button("=");
 		equals.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
 
-		dummy = new Button("?");
-		dummy.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+		negate = new Button("(-)");
+		negate.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
 
 		reset = new Button("C");
 		reset.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
@@ -186,7 +186,7 @@ public class Calc2 extends Application {
 		grid.add(subtract, 3, 5);
 		grid.add(zero, 0, 6);
 		grid.add(decimal, 1, 6);
-		grid.add(dummy, 2, 6);
+		grid.add(negate, 2, 6);
 		grid.add(add, 3, 6);
 		grid.add(equals, 4, 5, 1, 2);
 		grid.add(reset, 4, 3);
@@ -263,7 +263,7 @@ public class Calc2 extends Application {
         divide.setOnAction(e -> btncode(e));
         decimal.setOnAction(e -> btncode(e));
         equals.setOnAction(e -> btncode(e));
-        dummy.setOnAction(e -> btncode(e));
+        negate.setOnAction(e -> btncode(e));
         clearScreen.setOnAction(e -> btncode(e));
         reset.setOnAction(e -> btncode(e));
         setDisplayFontTo20.setOnAction(actionEvent -> displayFontCode(20));
@@ -303,6 +303,8 @@ public class Calc2 extends Application {
             addToDisplay("(");
         } else if (e.getSource() == rightParen) {
             addToDisplay(")");
+        } else if (e.getSource() == negate) {
+            addToDisplay("~");
         } else if (e.getSource() == decimal) {
             if (displayContents.indexOf(".") == -1) {
     		    displayContents += ".";
@@ -355,6 +357,9 @@ public class Calc2 extends Application {
     }
 
     public static String interpret (String expression) {
+        expression = expression.replace("~", "temp");
+        expression = expression.replace("-", "~");
+        expression = expression.replace("temp", "-");
         if (expression.indexOf("(") != -1) {
             int start = 0;
             int end = expression.indexOf(")");
@@ -365,7 +370,10 @@ public class Calc2 extends Application {
                     start = i;
                 }
             }
-            expression = expression.replace(expression.substring(start, end + 1), interpret(expression.substring(start + 1, end)));
+            expression = expression.replace("~", "temp");
+            expression = expression.replace("-", "~");
+            expression = expression.replace("temp", "-");
+            expression = expression = expression.replace(expression.substring(start, end + 1), interpret(expression.substring(start + 1, end)));
         } else {
             while(!isDouble(expression)) {
                 boolean oooTrip = false;
@@ -383,39 +391,65 @@ public class Calc2 extends Application {
                     }
                     oooTrip = true;
                 }
-                if (expression.indexOf("-") != -1 && !oooTrip) {
-                    test = expression.indexOf("-");
-                    operation = "-";
+                if (expression.indexOf("~") != -1 && !oooTrip) {
+                    test = expression.indexOf("~");
+                    operation = "~";
                 } else if (expression.indexOf("+") != -1 && !oooTrip) {
                     test = expression.indexOf("+");
                     operation = "+";
                 }
                 int i = 2;
+
                 while (test + i <= expression.length() && isDouble(expression.substring(test + 1, test + i))) {
-                    op2 = Double.parseDouble(expression.substring(test + 1, test + i));
+                    boolean tripForNegative = false;
+                    String testString = expression.substring(test + 1, test + i);
+                    if(testString.charAt(0) == '-') {
+                        testString = testString.replace("-", "");
+                        tripForNegative = true;
+                        if(testString.equals("")) {
+                            testString = "0";
+                        }
+                    }
+                    op2 = Double.parseDouble(testString);
+                    if (tripForNegative) {
+                        op2 = op2*-1;
+                    }
                     i++;
                 }
                 int j = 1;
                 while (test - j >= 0 && isDouble(expression.substring(test - j, test))) {
-                    op1 = Double.parseDouble(expression.substring(test - j, test));
+                    boolean tripForNegative = false;
+                    String testString = expression.substring(test - j, test);
+                    if(testString.charAt(0) == '-') {
+                        testString = testString.replace("-", "");
+                        tripForNegative = true;
+                        if(testString.equals("")) {
+                            testString = "0";
+                        }
+                    }
+                    op1 = Double.parseDouble(testString);
+                    if (tripForNegative) {
+                        op1 = op1*-1;
+                    }
                     j++;
                 }
                 String result = calculate(op1, op2, operation);
-                if(result.equals("STOP")) {
-                    break;
-                }
-                expression = expression.replace(expression.substring(test - j + 1, test) + operation + expression.substring(test + 1, test + i - 1), result);
+                expression = expression = expression.replace(expression.substring(test - j + 1, test) + operation + expression.substring(test + 1, test + i - 1), result);
             }
         }
         while (!isDouble(expression)) {
             expression = interpret(expression);
         }
+        expression = expression.replace("-", "~");
         return expression;
     }
 
     public static boolean isDouble( String str ) {
         if (str.indexOf("+") != -1) {
             return false;
+        }
+        if(str.equals("-")) {
+            return true;
         }
         try{
             Double.parseDouble( str );
@@ -431,7 +465,7 @@ public class Calc2 extends Application {
             return Double.toString(op1*op2);
         } else if (temp.equals("+")) {
             return Double.toString(op1+op2);
-        } else if (temp.equals("-")) {
+        } else if (temp.equals("~")) {
             return Double.toString(op1-op2);
         } else if (temp.equals("/")) {
             if (op2 == 0) {
@@ -447,7 +481,7 @@ public class Calc2 extends Application {
 
     public static void addToDisplay (String input) {
         if(displayContents.indexOf("ERR") == -1) {
-        	if ((displayContents.equals("0"))){
+        	if ((displayContents.equals("0") && !input.equals("-") && !input.equals("+") && !input.equals("*") && !input.equals("/"))){
         			displayContents = input;
         	} else {
         			displayContents += input;

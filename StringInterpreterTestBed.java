@@ -1,6 +1,6 @@
 import java.util.*;
 
-public class StringInterpreterBeta {
+public class StringInterpreterTestBed {
 
 	public static double op1 = 0;
 	public static double op2 = 0;
@@ -32,6 +32,7 @@ public class StringInterpreterBeta {
 			expression = expression = expression.replace(expression.substring(start, end + 1), interpret(expression.substring(start + 1, end)));
 		} else {
 			while(!isDouble(expression)) {
+				System.out.println(expression);
 				boolean oooTrip = false;
 				String operation = "";
 				int test = 0;
@@ -55,13 +56,39 @@ public class StringInterpreterBeta {
 					operation = "+";
 				}
 				int i = 2;
+
 				while (test + i <= expression.length() && isDouble(expression.substring(test + 1, test + i))) {
-					op2 = Double.parseDouble(expression.substring(test + 1, test + i));
+					boolean tripForNegative = false;
+					String testString = expression.substring(test + 1, test + i);
+					System.out.println(testString);
+					if(testString.charAt(0) == '-') {
+						testString = testString.replace("-", "");
+						tripForNegative = true;
+						if(testString.equals("")) {
+							testString = "0";
+						}
+					}
+					op2 = Double.parseDouble(testString);
+					if (tripForNegative) {
+						op2 = op2*-1;
+					}
 					i++;
 				}
 				int j = 1;
 				while (test - j >= 0 && isDouble(expression.substring(test - j, test))) {
-					op1 = Double.parseDouble(expression.substring(test - j, test));
+					boolean tripForNegative = false;
+					String testString = expression.substring(test - j, test);
+					if(testString.charAt(0) == '-') {
+						testString = testString.replace("-", "");
+						tripForNegative = true;
+						if(testString.equals("")) {
+							testString = "0";
+						}
+					}
+					op1 = Double.parseDouble(testString);
+					if (tripForNegative) {
+						op1 = op1*-1;
+					}
 					j++;
 				}
 				String result = calculate(op1, op2, operation);
@@ -77,6 +104,9 @@ public class StringInterpreterBeta {
 	public static boolean isDouble( String str ) {
 		if (str.indexOf("+") != -1) {
 			return false;
+		}
+		if(str.equals("-")) {
+			return true;
 		}
 	    try{
 	        Double.parseDouble( str );
