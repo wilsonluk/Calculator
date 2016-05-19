@@ -44,6 +44,7 @@ public class Calc2 extends Application {
     public static Button leftParen, rightParen;
     public static Button sin, cos, tan;
 	public static Button decimal, equals, negate, reset, clearScreen;
+    public static Button log, naturalLog, exponent, squareRoot, e;
     public static RadioMenuItem setDisplayFontTo20, setDisplayFontTo30, setDisplayFontTo40;
     public static RadioMenuItem setButtonFontTo10, setButtonFontTo15, setButtonFontTo20;
     public static RadioMenuItem setRadians, setDegrees;
@@ -179,6 +180,21 @@ public class Calc2 extends Application {
 		clearScreen = new Button("CE");
 		clearScreen.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
 
+        log = new Button("log");
+        log.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+
+        naturalLog = new Button("ln");
+        naturalLog.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+
+        exponent = new Button("^");
+        exponent.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+
+        squareRoot = new Button("sqrt");
+        squareRoot.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+
+        e = new Button("e");
+        e.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+
         displayFontCode(20);
         buttonFontCode(12);
 
@@ -190,31 +206,36 @@ public class Calc2 extends Application {
         grid.setVgap(10);
         grid.setPadding(new Insets(0, 10, 10, 10));
 
-        grid.add(display, 0, 1, 5, 1);        
-		grid.add(leftParen, 0, 2);
-        grid.add(rightParen, 1, 2);
-        grid.add(sin, 2, 2);
-        grid.add(cos, 3, 2);
-        grid.add(tan, 4, 2);
-        grid.add(seven, 0, 3);
-		grid.add(eight, 1, 3);
-		grid.add(nine, 2, 3);
-		grid.add(divide, 3, 3);       
-		grid.add(four, 0, 4);
-		grid.add(five, 1, 4);
-		grid.add(six, 2, 4);
-		grid.add(multiply, 3, 4);
-		grid.add(one, 0, 5);
-		grid.add(two, 1, 5);
-		grid.add(three, 2, 5);
-		grid.add(subtract, 3, 5);
-		grid.add(zero, 0, 6);
-		grid.add(decimal, 1, 6);
-		grid.add(negate, 2, 6);
-		grid.add(add, 3, 6);
-		grid.add(equals, 4, 5, 1, 2);
-		grid.add(reset, 4, 3);
-		grid.add(clearScreen, 4, 4);
+        grid.add(display, 0, 1, 5, 1);
+        grid.add(log, 0, 2);
+        grid.add(naturalLog, 1, 2);
+        grid.add(exponent, 2, 2);
+        grid.add(squareRoot, 3, 2);
+        grid.add(e, 4, 2);        
+		grid.add(leftParen, 0, 3);
+        grid.add(rightParen, 1, 3);
+        grid.add(sin, 2, 3);
+        grid.add(cos, 3, 3);
+        grid.add(tan, 4, 3);
+        grid.add(seven, 0, 4);
+		grid.add(eight, 1, 4);
+		grid.add(nine, 2, 4);
+		grid.add(divide, 3, 4);       
+		grid.add(four, 0, 5);
+		grid.add(five, 1, 5);
+		grid.add(six, 2, 5);
+		grid.add(multiply, 3, 5);
+		grid.add(one, 0, 6);
+		grid.add(two, 1, 6);
+		grid.add(three, 2, 6);
+		grid.add(subtract, 3, 6);
+		grid.add(zero, 0, 7);
+		grid.add(decimal, 1, 7);
+		grid.add(negate, 2, 7);
+		grid.add(add, 3, 7);
+		grid.add(equals, 4, 6, 1, 2);
+		grid.add(reset, 4, 4);
+		grid.add(clearScreen, 4, 5);
 
 		attachCode();
 
