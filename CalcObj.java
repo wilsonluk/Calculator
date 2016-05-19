@@ -17,6 +17,34 @@ public class CalcObj {
         expression = expression.replace("~", "temp");
         expression = expression.replace("-", "~");
         expression = expression.replace("temp", "-");
+        if (expression.indexOf("log(") != -1) {
+            int index = expression.indexOf("log(");
+            int end = findNeutralLevel(index, expression.length(), expression);
+            String originalExpression = expression.substring(index + 3, end+1);
+            int end2 = findNeutralLevel(0, originalExpression.length(), originalExpression);
+            String number = interpret(originalExpression.substring(1, end2), false);   
+            String solved = calculate(Double.parseDouble(number), 0, "log");
+            expression = expression.replace("log" + originalExpression, solved);
+            interpret(expression, true);
+        } else if (expression.indexOf("ln(") != -1) {
+            int index = expression.indexOf("ln(");
+            int end = findNeutralLevel(index, expression.length(), expression);
+            String originalExpression = expression.substring(index + 2, end+1);
+            int end2 = findNeutralLevel(0, originalExpression.length(), originalExpression);
+            String number = interpret(originalExpression.substring(1, end2), false);   
+            String solved = calculate(Double.parseDouble(number), 0, "ln");
+            expression = expression.replace("ln" + originalExpression, solved);
+            interpret(expression, true);
+        } else if (expression.indexOf("sqrt(") != -1) {
+            int index = expression.indexOf("sqrt(");
+            int end = findNeutralLevel(index, expression.length(), expression);
+            String originalExpression = expression.substring(index + 4, end+1);
+            int end2 = findNeutralLevel(0, originalExpression.length(), originalExpression);
+            String number = interpret(originalExpression.substring(1, end2), false);   
+            String solved = calculate(Double.parseDouble(number), 0, "sqrt");
+            expression = expression.replace("sqrt" + originalExpression, solved);
+            interpret(expression, true);
+        }
         if (expression.indexOf("sin(") != -1) {
             int index = expression.indexOf("sin(");
             int end = findNeutralLevel(index, expression.length(), expression);
@@ -207,6 +235,15 @@ public class CalcObj {
             return tempDouble.toString();
         } else if (temp.equals("tan")) {
             Double tempDouble = Math.tan(op1);
+            return tempDouble.toString();
+        } else if (temp.equals("log")) {
+            Double tempDouble = Math.log10(op1);
+            return tempDouble.toString();
+        } else if (temp.equals("ln")) {
+            Double tempDouble = Math.log(op1);
+            return tempDouble.toString();
+        } else if (temp.equals("sqrt")) {
+            Double tempDouble = Math.sqrt(op1);
             return tempDouble.toString();
         }
         return "";

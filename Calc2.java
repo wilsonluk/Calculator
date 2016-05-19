@@ -266,7 +266,10 @@ public class Calc2 extends Application {
         RowConstraints row6 = new RowConstraints();
         row6.setVgrow(Priority.ALWAYS);
         row6.setFillHeight(true);
-    	grid.getRowConstraints().addAll(row0, row1, row2, row3, row4, row5, row6);
+        RowConstraints row7 = new RowConstraints();
+        row7.setVgrow(Priority.ALWAYS);
+        row7.setFillHeight(true);
+    	grid.getRowConstraints().addAll(row0, row1, row2, row3, row4, row5, row6, row7);
 
     	grid.setPrefSize(WINDOW_WIDTH-10, WINDOW_HEIGHT-10);
     	grid.setMaxSize(Region.USE_COMPUTED_SIZE-10, Region.USE_COMPUTED_SIZE-10);
@@ -314,6 +317,11 @@ public class Calc2 extends Application {
         negate.setOnAction(e -> btncode(e));
         clearScreen.setOnAction(e -> btncode(e));
         reset.setOnAction(e -> btncode(e));
+        log.setOnAction(e -> btncode(e));
+        naturalLog.setOnAction(e -> btncode(e));
+        e.setOnAction(e -> btncode(e));
+        squareRoot.setOnAction(e -> btncode(e));
+        exponent.setOnAction(e -> btncode(e));
         setDisplayFontTo20.setOnAction(actionEvent -> displayFontCode(20));
         setDisplayFontTo30.setOnAction(actionEvent -> displayFontCode(30));
         setDisplayFontTo40.setOnAction(actionEvent -> displayFontCode(40));
@@ -361,6 +369,12 @@ public class Calc2 extends Application {
             addToDisplay("tan(");
         } else if (e.getSource() == negate) {
             addToDisplay("~");
+        } else if (e.getSource() == log) {
+            addToDisplay("log(");
+        } else if (e.getSource() == naturalLog) {
+            addToDisplay("ln(");
+        } else if (e.getSource() == squareRoot) {
+            addToDisplay("sqrt(");
         } else if (e.getSource() == decimal) {
             if (displayContents.indexOf(".") == -1) {
     		    displayContents += ".";
@@ -422,6 +436,11 @@ public class Calc2 extends Application {
         sin.setFont(font2);
         cos.setFont(font2);
         tan.setFont(font2);
+        log.setFont(font2);
+        naturalLog.setFont(font2);
+        exponent.setFont(font2);
+        e.setFont(font2);
+        squareRoot.setFont(font2);
     }
 
     public static void addToDisplay (String input) {
