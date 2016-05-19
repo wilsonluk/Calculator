@@ -44,13 +44,12 @@ public class CalcObj {
             String solved = calculate(Double.parseDouble(number), 0, "sqrt");
             expression = expression.replace("sqrt" + originalExpression, solved);
             interpret(expression, true);
-        }
-        if (expression.indexOf("sin(") != -1) {
+        } else if (expression.indexOf("sin(") != -1) {
             int index = expression.indexOf("sin(");
             int end = findNeutralLevel(index, expression.length(), expression);
             String originalExpression = expression.substring(index + 3, end+1);
             int end2 = findNeutralLevel(0, originalExpression.length(), originalExpression);
-            String number = interpret(originalExpression.substring(1, end2), false);            
+            String number = interpret(originalExpression.substring(1, end2), false);                        
             String solved = "";
             if(isRadians){
                 solved = calculate(Double.parseDouble(number), 0, "sin");
@@ -59,6 +58,7 @@ public class CalcObj {
                 solved = calculate(Math.toRadians(Double.parseDouble(number)), 0, "sin");
             }
             expression = expression.replace("sin" + originalExpression, solved);
+            expression = expression.replace("-", "~");
             interpret(expression, true);
         } else if (expression.indexOf("cos(") != -1) {
             int index = expression.indexOf("cos(");
@@ -180,23 +180,23 @@ public class CalcObj {
                 expression = interpret(expression, true);
             }
         }
-        if (tripConvert) {
-            expression = expression.replace("-", "~");
-        }
         return expression;
     }
 
     public static int findNeutralLevel (int start, int end, String text) {
         int level = 0;
         int index = 0;
+        boolean trip = false;
         for (int i = start; i < end; i++) {
             if (text.charAt(i) == '(') {
                 level++;
+                trip = true;
             } else if (text.charAt(i) == ')') {
                 level--;
             }
-            if (level == 0) {
+            if (level == 0 && trip) {
                 index = i;
+                break;
             }
         }
         return index;

@@ -289,7 +289,7 @@ public class Calc2 extends Application {
 		primaryStage.setTitle("Calc V0.1");
 		primaryStage.setScene(calcScene);
 		primaryStage.show();
-		display.setText(displayContents);
+		output(displayContents);
 	}
 
 	public void attachCode() {
@@ -336,7 +336,7 @@ public class Calc2 extends Application {
     	if (e.getSource() == zero) {
     		if (!(displayContents.equals("0"))){
     			displayContents += "0";
-    			display.setText(displayContents);
+    			output(displayContents);
     		}
     	}
     	if (e.getSource() == one) {
@@ -378,7 +378,7 @@ public class Calc2 extends Application {
         } else if (e.getSource() == decimal) {
             if (displayContents.indexOf(".") == -1) {
     		    displayContents += ".";
-                display.setText(displayContents);
+                output(displayContents);
             }
     	} else if (e.getSource() == clearScreen) {
     		clearDisplay();
@@ -444,19 +444,20 @@ public class Calc2 extends Application {
     }
 
     public static void addToDisplay (String input) {
+        displayContents = display.getText();
         if(displayContents.indexOf("ERR") == -1) {
         	if ((displayContents.equals("0") && !input.equals("-") && !input.equals("+") && !input.equals("*") && !input.equals("/"))){
         			displayContents = input;
         	} else {
         			displayContents += input;
         	}
-        	display.setText(displayContents);
+        	output(displayContents);
         }
     }
 
     public static void clearDisplay () {
     	displayContents = "0";
-    	display.setText(displayContents);
+    	output(displayContents);
     }
 
     public static void calculate () {
@@ -485,12 +486,17 @@ public class Calc2 extends Application {
         return false;
     }
 
+    public static void output (String out) {
+        out.replace("~", "-");
+        display.setText(out);
+    }
+
     public static void printResult (String result) {
     	if (result.indexOf(".0") == (result.length()-2)) {
     		result = result.substring(0, result.length()-2);
     	}
     	displayContents = result;
-    	display.setText(displayContents);
+    	output(displayContents);
     }
     
     public static void main(String[] args) {
