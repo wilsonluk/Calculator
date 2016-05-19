@@ -1,7 +1,13 @@
+import java.lang.*;
 public class CalcObj {
+    public static boolean isRadians = true;
 
     public void CalcObj (String input) {
         
+    }
+
+    public void setIsRadians(boolean isRadians){
+        this.isRadians = isRadians;
     }
 
     public String interpret (String expression, boolean tripConvert) {
@@ -16,9 +22,14 @@ public class CalcObj {
             int end = findNeutralLevel(index, expression.length(), expression);
             String originalExpression = expression.substring(index + 3, end+1);
             int end2 = findNeutralLevel(0, originalExpression.length(), originalExpression);
-            String number = interpret(originalExpression.substring(1, end2), false);
-            System.out.println(number);
-            String solved = calculate(Double.parseDouble(number), 0, "sin");
+            String number = interpret(originalExpression.substring(1, end2), false);            
+            String solved = "";
+            if(isRadians){
+                solved = calculate(Double.parseDouble(number), 0, "sin");
+            }
+            else{
+                solved = calculate(Math.toRadians(Double.parseDouble(number)), 0, "sin");
+            }
             expression = expression.replace("sin" + originalExpression, solved);
             interpret(expression, true);
         } else if (expression.indexOf("cos(") != -1) {
@@ -27,7 +38,13 @@ public class CalcObj {
             String originalExpression = expression.substring(index + 3, end+1);
             int end2 = findNeutralLevel(0, originalExpression.length(), originalExpression);
             String number = interpret(originalExpression.substring(1, end2), false);
-            String solved = calculate(Double.parseDouble(number), 0, "cos");
+            String solved = "";
+            if(isRadians){
+                solved = calculate(Double.parseDouble(number), 0, "cos");
+            }
+            else{
+                solved = calculate(Math.toRadians(Double.parseDouble(number)), 0, "cos");
+            }
             expression = expression.replace("cos" + originalExpression, solved);
             interpret(expression, true);
         } else if (expression.indexOf("tan(") != -1) {
@@ -36,10 +53,14 @@ public class CalcObj {
             String originalExpression = expression.substring(index + 3, end+1);
             int end2 = findNeutralLevel(0, originalExpression.length(), originalExpression);
             String number = interpret(originalExpression.substring(1, end2), false);            
-            if(Double.parseDouble(number) != Math.PI/2) {
-                System.out.println(number);
-                System.out.println("Hi");
-                String solved = calculate(Double.parseDouble(number), 0, "tan");
+            if(Double.parseDouble(number) != Math.PI/2) {                
+                String solved = "";
+                if(isRadians){
+                    solved = calculate(Double.parseDouble(number), 0, "tan");
+                }
+                else{
+                    solved = calculate(Math.toRadians(Double.parseDouble(number)), 0, "tan");
+                }
                 expression = expression.replace("tan" + originalExpression, solved);
                 interpret(expression, true);
             } else {

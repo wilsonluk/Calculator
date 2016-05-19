@@ -46,6 +46,9 @@ public class Calc2 extends Application {
 	public static Button decimal, equals, negate, reset, clearScreen;
     public static RadioMenuItem setDisplayFontTo20, setDisplayFontTo30, setDisplayFontTo40;
     public static RadioMenuItem setButtonFontTo10, setButtonFontTo15, setButtonFontTo20;
+    public static RadioMenuItem setRadians, setDegrees;
+
+    public static boolean isRadians = true;
 
 	public void start(Stage primaryStage) { //initializes the GUI
 		
@@ -88,7 +91,17 @@ public class Calc2 extends Application {
         setButtonFontTo20 = new RadioMenuItem("20");
         setButtonFontTo20.setToggleGroup(buttonToggle);
         buttonFontSize.getItems().addAll(setButtonFontTo10, setButtonFontTo15, setButtonFontTo20);
-        optionsMenu.getItems().add(buttonFontSize);
+        optionsMenu.getItems().add(buttonFontSize);       
+
+        Menu angleUnits = new Menu("Angle Unit");
+        ToggleGroup unitToggle = new ToggleGroup();
+        setRadians = new RadioMenuItem("Radians");
+        setRadians.setToggleGroup(unitToggle);
+        setRadians.setSelected(true);
+        setDegrees = new RadioMenuItem("Degrees");
+        setDegrees.setToggleGroup(unitToggle);
+        angleUnits.getItems().addAll(setRadians, setDegrees);
+        optionsMenu.getItems().add(angleUnits);
 
         menuBar.getMenus().addAll(fileMenu, optionsMenu);
 
@@ -286,6 +299,8 @@ public class Calc2 extends Application {
         setButtonFontTo10.setOnAction(actionEvent -> buttonFontCode(10));
         setButtonFontTo15.setOnAction(actionEvent -> buttonFontCode(15));
         setButtonFontTo20.setOnAction(actionEvent -> buttonFontCode(20));
+        setRadians.setOnAction(actionEvent -> angleUnit("Radians"));
+        setDegrees.setOnAction(actionEvent -> angleUnit("Degrees"));
     }
 
     public void btncode(ActionEvent e) {
@@ -354,6 +369,15 @@ public class Calc2 extends Application {
         display.setFont(font1);            
     }
 
+    public void angleUnit(String unit){
+        if(unit.equals("Radians")){
+            isRadians = true;
+        }
+        else{
+            isRadians = false;
+        }
+    }
+
     public void buttonFontCode (int num) {
         Font font2 = new Font(num);
         zero.setFont(font2);
@@ -398,6 +422,7 @@ public class Calc2 extends Application {
     public static void calculate () {
         if(matched(displayContents) && displayContents.indexOf("ERR") == -1) {
             CalcObj newCalc = new CalcObj();
+            newCalc.setIsRadians(isRadians);
             printResult(newCalc.interpret(displayContents, true));
         }  
     }
