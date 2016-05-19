@@ -102,6 +102,7 @@ public class Calc2 extends Application {
         setDegrees = new RadioMenuItem("Degrees");
         setDegrees.setToggleGroup(unitToggle);
         angleUnits.getItems().addAll(setRadians, setDegrees);
+        optionsMenu.getItems().add(new SeparatorMenuItem());
         optionsMenu.getItems().add(angleUnits);
 
         menuBar.getMenus().addAll(fileMenu, optionsMenu);
