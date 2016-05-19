@@ -286,7 +286,7 @@ public class Calc2 extends Application {
                 }                
             }
         });
-		primaryStage.setTitle("Calc V0.1");
+		primaryStage.setTitle("Calc V0.2");
 		primaryStage.setScene(calcScene);
 		primaryStage.show();
 		output(displayContents);
