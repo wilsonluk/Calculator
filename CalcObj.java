@@ -1,6 +1,7 @@
 import java.lang.*;
 public class CalcObj {
     public static boolean isRadians = true;
+    public static int counter = 0;
 
     public void CalcObj (String input) {
         
@@ -11,7 +12,7 @@ public class CalcObj {
     }
 
     public String interpret (String expression, boolean tripConvert) {
-        boolean errorTrip = false;
+        boolean errorTrip = false;        
         double op1 = 0;
         double op2 = 0;
         expression = expression.replace("~", "temp");
@@ -110,7 +111,12 @@ public class CalcObj {
             expression = expression.replace("temp", "-");
             expression = expression = expression.replace(expression.substring(start, end + 1), interpret(expression.substring(start + 1, end), true));
         } else {
-            while(!isDouble(expression)) {
+            boolean infiniteLoop = false;
+            while((!isDouble(expression)) && !(infiniteLoop)) {
+                counter++;                
+                if(counter > 100){
+                    infiniteLoop = true;                       
+                }         
                 boolean oooTrip = false;
                 String operation = "";
                 int test = 0;
@@ -136,7 +142,7 @@ public class CalcObj {
                 int i = 2;
                 while (test + i <= expression.length() && isDouble(expression.substring(test + 1, test + i))) {
                     boolean tripForNegative = false;
-                    String testString = expression.substring(test + 1, test + i);
+                    String testString = expression.substring(test + 1, test + i);                   
                     if(testString.charAt(0) == '-') {
                         testString = testString.replace("-", "");
                         tripForNegative = true;
@@ -153,7 +159,7 @@ public class CalcObj {
                 int j = 1;
                 while (test - j >= 0 && isDouble(expression.substring(test - j, test))) {
                     boolean tripForNegative = false;
-                    String testString = expression.substring(test - j, test);
+                    String testString = expression.substring(test - j, test);                    
                     if(testString.charAt(0) == '-') {
                         testString = testString.replace("-", "");
                         tripForNegative = true;
@@ -177,9 +183,14 @@ public class CalcObj {
             }
         }if (!errorTrip) {
             while (!isDouble(expression)) {
+                if(counter > 100){
+                    break;
+                }                
                 expression = interpret(expression, true);
+                
             }
         }
+
         return expression;
     }
 
@@ -245,7 +256,7 @@ public class CalcObj {
         } else if (temp.equals("sqrt")) {
             Double tempDouble = Math.sqrt(op1);
             return tempDouble.toString();
-        }
+        } 
         return "";
     }
 }
