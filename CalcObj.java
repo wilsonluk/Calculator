@@ -11,6 +11,10 @@ public class CalcObj {
         this.isRadians = isRadians;
     }
 
+    public int getCounter(){
+        return counter;
+    }
+
     public String interpret (String expression, boolean tripConvert) {
         boolean errorTrip = false;        
         double op1 = 0;

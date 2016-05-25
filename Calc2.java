@@ -466,6 +466,9 @@ public class Calc2 extends Application {
             CalcObj newCalc = new CalcObj();
             newCalc.setIsRadians(isRadians);
             printResult(newCalc.interpret(displayContents, true));
+            if(newCalc.getCounter() > 100){
+                printResult("ERR");                
+            }
         }  
     }
 
