@@ -38,13 +38,14 @@ public class Calc2 extends Application {
     public static double op1 = 0;
     public static double op2 = 0;
 
+    //Variables for the GUI elements
 	public static TextField display;
 	public static Button zero, one, two, three, four, five, six, seven, eight, nine;
 	public static Button multiply, divide, add, subtract;
     public static Button leftParen, rightParen;
     public static Button sin, cos, tan;
 	public static Button decimal, equals, negate, reset, clearScreen;
-    public static Button log, naturalLog, exponent, squareRoot, e;
+    public static Button log, naturalLog, exponent, squareRoot, eVal;
     public static RadioMenuItem setDisplayFontTo20, setDisplayFontTo30, setDisplayFontTo40;
     public static RadioMenuItem setButtonFontTo10, setButtonFontTo15, setButtonFontTo20;
     public static RadioMenuItem setRadians, setDegrees;
@@ -59,6 +60,7 @@ public class Calc2 extends Application {
         
         BorderPane border = new BorderPane();
 
+        //Define the Menu Bar
         MenuBar menuBar = new MenuBar();
         menuBar.prefWidthProperty().bind(primaryStage.widthProperty());
         border.setTop(menuBar);
@@ -70,6 +72,7 @@ public class Calc2 extends Application {
 
         Menu optionsMenu = new Menu("Options");
 
+        //Define Display Font Menu
         Menu displayFontSize = new Menu("Display Font Size");
         ToggleGroup displayToggle = new ToggleGroup();
         setDisplayFontTo20 = new RadioMenuItem("20");
@@ -82,6 +85,7 @@ public class Calc2 extends Application {
         displayFontSize.getItems().addAll(setDisplayFontTo20, setDisplayFontTo30, setDisplayFontTo40);
         optionsMenu.getItems().add(displayFontSize);
 
+        //Define Button Font Menu
         Menu buttonFontSize = new Menu("Button Font Size");
         ToggleGroup buttonToggle = new ToggleGroup();
         setButtonFontTo10 = new RadioMenuItem("10");
@@ -94,6 +98,7 @@ public class Calc2 extends Application {
         buttonFontSize.getItems().addAll(setButtonFontTo10, setButtonFontTo15, setButtonFontTo20);
         optionsMenu.getItems().add(buttonFontSize);       
 
+        //Define Angle Units Menu
         Menu angleUnits = new Menu("Angle Unit");
         ToggleGroup unitToggle = new ToggleGroup();
         setRadians = new RadioMenuItem("Radians");
@@ -109,7 +114,8 @@ public class Calc2 extends Application {
 
         exit.setOnAction(actionEvent -> Platform.exit());     
 
-		zero = new Button("0");
+		//Defines the size of each of the buttons
+        zero = new Button("0");
 		zero.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
 
 		one = new Button("1");
@@ -193,8 +199,8 @@ public class Calc2 extends Application {
         squareRoot = new Button("sqrt");
         squareRoot.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
 
-        e = new Button("e");
-        e.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+        eVal = new Button("e");
+        eVal.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
 
         displayFontCode(20);
         buttonFontCode(12);
@@ -212,7 +218,7 @@ public class Calc2 extends Application {
         grid.add(naturalLog, 1, 2);
         grid.add(exponent, 2, 2);
         grid.add(squareRoot, 3, 2);
-        grid.add(e, 4, 2);        
+        grid.add(eVal, 4, 2);        
 		grid.add(leftParen, 0, 3);
         grid.add(rightParen, 1, 3);
         grid.add(sin, 2, 3);
@@ -287,13 +293,14 @@ public class Calc2 extends Application {
                 }                
             }
         });
-		primaryStage.setTitle("Calc V0.2");
+		primaryStage.setTitle("Calc BETA V0.3");
 		primaryStage.setScene(calcScene);
 		primaryStage.show();
 		output(displayContents);
 	}
 
-	public void attachCode() {
+	//Defines the actions for the buttons
+    public void attachCode() {
 		zero.setOnAction(e -> btncode(e));
         one.setOnAction(e -> btncode(e));
         two.setOnAction(e -> btncode(e));
@@ -320,7 +327,7 @@ public class Calc2 extends Application {
         reset.setOnAction(e -> btncode(e));
         log.setOnAction(e -> btncode(e));
         naturalLog.setOnAction(e -> btncode(e));
-        e.setOnAction(e -> btncode(e));
+        eVal.setOnAction(e -> btncode(e));
         squareRoot.setOnAction(e -> btncode(e));
         exponent.setOnAction(e -> btncode(e));
         setDisplayFontTo20.setOnAction(actionEvent -> displayFontCode(20));
@@ -333,6 +340,7 @@ public class Calc2 extends Application {
         setDegrees.setOnAction(actionEvent -> angleUnit("Degrees"));
     }
 
+    //Runs the appropriate code when a button is pressed
     public void btncode(ActionEvent e) {
     	if (e.getSource() == zero) {
     		if (!(displayContents.equals("0"))){
@@ -358,7 +366,11 @@ public class Calc2 extends Application {
     		addToDisplay("8");
     	} else if (e.getSource() == nine) {
     		addToDisplay("9");
-    	} else if (e.getSource() == leftParen) {
+    	} else if (e.getSource() == exponent) {
+            addToDisplay("^");
+        } else if (e.getSource() == eVal) {
+            addToDisplay("e");
+        } else if (e.getSource() == leftParen) {
             addToDisplay("(");
         } else if (e.getSource() == rightParen) {
             addToDisplay(")");
@@ -400,11 +412,13 @@ public class Calc2 extends Application {
     	}
     }
 
+    //Sets the font of the screen
     public void displayFontCode(int num) {
         Font font1 = new Font(num);
         display.setFont(font1);            
     }
 
+    //Switches the trig functions between degrees and radians
     public void angleUnit(String unit){
         if(unit.equals("Radians")){
             isRadians = true;
@@ -414,6 +428,7 @@ public class Calc2 extends Application {
         }
     }
 
+    //Sets the font of the labels in the button
     public void buttonFontCode (int num) {
         Font font2 = new Font(num);
         zero.setFont(font2);
@@ -440,10 +455,11 @@ public class Calc2 extends Application {
         log.setFont(font2);
         naturalLog.setFont(font2);
         exponent.setFont(font2);
-        e.setFont(font2);
+        eVal.setFont(font2);
         squareRoot.setFont(font2);
     }
 
+    //Check whether the diplay is empty and adds the appropriate output when a button is pressed
     public static void addToDisplay (String input) {
         displayContents = display.getText();
         if(displayContents.indexOf("ERR") == -1) {
@@ -456,11 +472,13 @@ public class Calc2 extends Application {
         }
     }
 
+    //Clears the Dsiplay's contents
     public static void clearDisplay () {
     	displayContents = "0";
     	output(displayContents);
     }
 
+    //Defines a new CalcOBJ object for the calcualtion
     public static void calculate () {
         if(matched(displayContents) && displayContents.indexOf("ERR") == -1) {
             CalcObj newCalc = new CalcObj();
@@ -472,6 +490,7 @@ public class Calc2 extends Application {
         }  
     }
 
+    //checks that the proper amount of parenthesis are present.
     public static boolean matched (String toTheTest) {
         int level = 0;
         for (int i = 0; i < toTheTest.length(); i++) {
@@ -490,11 +509,13 @@ public class Calc2 extends Application {
         return false;
     }
 
+    //Takes a string and outputs it to the screen
     public static void output (String out) {
         out.replace("~", "-");
         display.setText(out);
     }
 
+    //Formats the string before outputting the string.
     public static void printResult (String result) {
     	if (result.indexOf(".0") == (result.length()-2)) {
     		result = result.substring(0, result.length()-2);

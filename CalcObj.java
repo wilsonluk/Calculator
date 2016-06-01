@@ -1,5 +1,8 @@
 import java.lang.*;
+import java.util.Scanner;
+
 public class CalcObj {
+
     public static boolean isRadians = true;
     public static int counter = 0;
 
@@ -15,90 +18,70 @@ public class CalcObj {
         return counter;
     }
 
+    //Code for each of the operations
     public String interpret (String expression, boolean tripConvert) {
-        boolean errorTrip = false;        
         double op1 = 0;
         double op2 = 0;
         expression = expression.replace("~", "temp");
         expression = expression.replace("-", "~");
         expression = expression.replace("temp", "-");
-        if (expression.indexOf("log(") != -1) {
-            int index = expression.indexOf("log(");
-            int end = findNeutralLevel(index, expression.length(), expression);
-            String originalExpression = expression.substring(index + 3, end+1);
-            int end2 = findNeutralLevel(0, originalExpression.length(), originalExpression);
-            String number = interpret(originalExpression.substring(1, end2), false);   
-            String solved = calculate(Double.parseDouble(number), 0, "log");
-            expression = expression.replace("log" + originalExpression, solved);
+        if (expression.indexOf("e") != -1) {
+            Double naturalLog = new Double(Math.E);
+            expression = expression.replace("e", naturalLog.toString());
             interpret(expression, true);
+        } else if (expression.indexOf("^") != -1) {
+            int index = expression.indexOf("^");
+            int indexOfPower = findLevel(true, index, expression.length(), expression, -1);
+            String stringOfPower = expression.substring(index + 1, indexOfPower);
+            Double power = Double.parseDouble(stringOfPower);
+            int indexOfBase = 0;
+            for (int i = index; i >= 0; i--) {
+                if (expression.charAt(i) == '(') {
+                    indexOfBase = i;
+                    break;
+                }
+            }
+            String stringOfBase = expression.substring(indexOfBase + 1, index);
+            Double base = Double.parseDouble(stringOfBase);
+            expression = expression.replace("(" + stringOfBase + "^" + stringOfPower + ")", calculate(base, power, "^"));
+            interpret(expression, true);
+        } else if (expression.indexOf("log(") != -1) {
+            interpret(replacement(expression, "log", 3, 1), true);
         } else if (expression.indexOf("ln(") != -1) {
-            int index = expression.indexOf("ln(");
-            int end = findNeutralLevel(index, expression.length(), expression);
-            String originalExpression = expression.substring(index + 2, end+1);
-            int end2 = findNeutralLevel(0, originalExpression.length(), originalExpression);
-            String number = interpret(originalExpression.substring(1, end2), false);   
-            String solved = calculate(Double.parseDouble(number), 0, "ln");
-            expression = expression.replace("ln" + originalExpression, solved);
-            interpret(expression, true);
+            interpret(replacement(expression, "ln", 2, 1), true);
         } else if (expression.indexOf("sqrt(") != -1) {
             int index = expression.indexOf("sqrt(");
-            int end = findNeutralLevel(index, expression.length(), expression);
+            int end = findLevel(false, index, expression.length(), expression, 0);
             String originalExpression = expression.substring(index + 4, end+1);
-            int end2 = findNeutralLevel(0, originalExpression.length(), originalExpression);
+            int end2 = findLevel(false, 0, originalExpression.length(), originalExpression, 0);
             String number = interpret(originalExpression.substring(1, end2), false);   
             String solved = calculate(Double.parseDouble(number), 0, "sqrt");
             expression = expression.replace("sqrt" + originalExpression, solved);
             interpret(expression, true);
         } else if (expression.indexOf("sin(") != -1) {
-            int index = expression.indexOf("sin(");
-            int end = findNeutralLevel(index, expression.length(), expression);
-            String originalExpression = expression.substring(index + 3, end+1);
-            int end2 = findNeutralLevel(0, originalExpression.length(), originalExpression);
-            String number = interpret(originalExpression.substring(1, end2), false);                        
-            String solved = "";
-            if(isRadians){
-                solved = calculate(Double.parseDouble(number), 0, "sin");
-            }
-            else{
-                solved = calculate(Math.toRadians(Double.parseDouble(number)), 0, "sin");
-            }
-            expression = expression.replace("sin" + originalExpression, solved);
-            expression = expression.replace("-", "~");
+            expression = trigReplacement(expression, "sin");
             interpret(expression, true);
         } else if (expression.indexOf("cos(") != -1) {
-            int index = expression.indexOf("cos(");
-            int end = findNeutralLevel(index, expression.length(), expression);
-            String originalExpression = expression.substring(index + 3, end+1);
-            int end2 = findNeutralLevel(0, originalExpression.length(), originalExpression);
-            String number = interpret(originalExpression.substring(1, end2), false);
-            String solved = "";
-            if(isRadians){
-                solved = calculate(Double.parseDouble(number), 0, "cos");
-            }
-            else{
-                solved = calculate(Math.toRadians(Double.parseDouble(number)), 0, "cos");
-            }
-            expression = expression.replace("cos" + originalExpression, solved);
+            expression = trigReplacement(expression, "sin");
             interpret(expression, true);
         } else if (expression.indexOf("tan(") != -1) {
             int index = expression.indexOf("tan(");
-            int end = findNeutralLevel(index, expression.length(), expression);
+            int end = findLevel(false, index, expression.length(), expression, 0);
             String originalExpression = expression.substring(index + 3, end+1);
-            int end2 = findNeutralLevel(0, originalExpression.length(), originalExpression);
+            int end2 = findLevel(false, 0, originalExpression.length(), originalExpression, 0);
             String number = interpret(originalExpression.substring(1, end2), false);            
-            if(Double.parseDouble(number) != Math.PI/2) {                
+            if (Double.parseDouble(number) != Math.PI/2) {                
                 String solved = "";
-                if(isRadians){
+                if (isRadians) {
                     solved = calculate(Double.parseDouble(number), 0, "tan");
                 }
-                else{
+                else {
                     solved = calculate(Math.toRadians(Double.parseDouble(number)), 0, "tan");
                 }
                 expression = expression.replace("tan" + originalExpression, solved);
                 interpret(expression, true);
             } else {
                 expression = "ERR: TAN";
-                errorTrip = true;
             }
         } else if (expression.indexOf("(") != -1) {
             int start = 0;
@@ -182,23 +165,49 @@ public class CalcObj {
                 } else {
                     String result = calculate(op1, op2, operation);
                     expression = expression = expression.replace(expression.substring(test - j + 1, test) + operation + expression.substring(test + 1, test + i - 1), result);
-                }
-                
-            }
-        }if (!errorTrip) {
-            while (!isDouble(expression)) {
-                if(counter > 100){
-                    break;
-                }                
-                expression = interpret(expression, true);
-                
+                }   
             }
         }
-
+        while (!isDouble(expression)) {
+            if(counter > 100){
+                break;
+            }                
+            expression = interpret(expression, true);    
+        }
         return expression;
     }
 
-    public static int findNeutralLevel (int start, int end, String text) {
+    //Generic code for the other functions
+    public String replacement(String expression, String operator, int startPad, int endPad) {
+        int index = expression.indexOf(operator+ "(");
+        int end = findLevel(false, index, expression.length(), expression, 0);
+        String originalExpression = expression.substring(index + startPad, end+endPad);
+        int end2 = findLevel(false, 0, originalExpression.length(), originalExpression, 0);
+        System.out.println(originalExpression.substring(1, end2));
+        String number = interpret(originalExpression.substring(1, end2), false);   
+        return expression.replace(operator + originalExpression, calculate(Double.parseDouble(number), 0, operator));
+    }
+
+    //Generic code for the trig functions
+    public String trigReplacement(String expression, String operator) {
+        int index = expression.indexOf(operator + "(");
+        int end = findLevel(false, index, expression.length(), expression, 0);
+        String originalExpression = expression.substring(index + 3, end+1);
+        int end2 = findLevel(false, 0, originalExpression.length(), originalExpression, 0);
+        String number = interpret(originalExpression.substring(1, end2), false);                        
+        String solved = "";
+        if(isRadians){
+            solved = calculate(Double.parseDouble(number), 0, operator);
+        }
+        else{
+            solved = calculate(Math.toRadians(Double.parseDouble(number)), 0, operator);
+        }
+        expression = expression.replace(operator + originalExpression, solved);
+        return expression.replace("-", "~");
+    }
+
+    //Finds the index of a string where the parenthesis level is the passed integer
+    public static int findLevel (boolean trip2, int start, int end, String text, int levelSet) {
         int level = 0;
         int index = 0;
         boolean trip = false;
@@ -209,14 +218,20 @@ public class CalcObj {
             } else if (text.charAt(i) == ')') {
                 level--;
             }
-            if (level == 0 && trip) {
+            if (level == levelSet && trip) {
                 index = i;
                 break;
             }
+            if (trip2) {
+                trip = true;
+                trip2 = false;
+            }
+            
         }
         return index;
     }
 
+    //Checks whether a string is a double or not
     public static boolean isDouble( String str ) {
         if (str.indexOf("+") != -1) {
             return false;
@@ -233,6 +248,7 @@ public class CalcObj {
         }
     }
 
+    //Runs the calcuation for each of the operations
     public static String calculate (double op1, double op2, String temp) {
         if (temp.equals("*")) {
             return Double.toString(op1*op2);
@@ -260,7 +276,18 @@ public class CalcObj {
         } else if (temp.equals("sqrt")) {
             Double tempDouble = Math.sqrt(op1);
             return tempDouble.toString();
-        } 
+        } else if (temp.equals("^")) {
+            Double tempDouble = Math.pow(op1, op2);
+            return tempDouble.toString();
+        }
         return "";
+    }
+
+    //Code only for testing
+    public static void main (String[] args) {
+        System.out.println("Enter an operation:");
+        Scanner input = new Scanner (System.in);
+        CalcObj newCalc = new CalcObj();
+        System.out.println(newCalc.interpret(input.next(), true));
     }
 }
